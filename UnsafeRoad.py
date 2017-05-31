@@ -4,27 +4,40 @@ from pygame.locals import *
 # To make pygame function works
 pygame.init()
 
+''' 1. SCREEN '''
 # As per road image dimension
 screenSizeX = 800
 screenSizeY = 419
 
+''' 2. ROAD / BACKGROUND '''
 # X and Y coordinates or starting coordinates for background image
 roadPositionX = 0
 roadPositionY = 0
 
+''' 3. PLAYER '''
 # X and Y coordinates or starting coordinates for player
 playerPositionX = 200
 playerPositionY = 260
-
-# X and Y coordinates or starting coordinates for car
-carPositionX = 500
-carPositionY = 280
 
 # Initial value for player movement in X direction is set to 0
 movePlayerX = 0
 
 # Speed of player in X direction is 1 i.e., 10px
 playerSpeedX = 1
+
+''' 4. CAR '''
+# X and Y coordinates or starting coordinates for car
+carPositionX = 800
+carPositionY = 280
+
+# setInitialCarPositionX is set to 800
+setInitialCarPositionX = carPositionX
+
+# carPositionMinX is set to -ve of car width
+carPositionMinX = -260
+
+# Car speed is set to 0.5 i.e., 5px
+carSpeedX = 0.5
 
 # Surface object
 displaySurface = pygame.display.set_mode((screenSizeX, screenSizeY))
@@ -80,6 +93,14 @@ while True:  # main game loop
 
     # For each of the changed value of movePlayer playerPositionX is updated
     playerPositionX += movePlayerX
+
+    # carPositionX is updated with value -1 i.e., -10px in each iteration
+    carPositionX -= carSpeedX
+
+    # If carPositionX is decreased to less than carPositionMinX i.e., width of car
+    if carPositionX < carPositionMinX:
+        # Update carPositionX back to initial position
+        carPositionX = setInitialCarPositionX
 
     # Update the Surface object or [screen]
     pygame.display.update()
