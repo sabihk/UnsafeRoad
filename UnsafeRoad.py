@@ -19,11 +19,16 @@ roadPositionY = 0
 playerPositionX = 200
 playerPositionY = 260
 
-# Initial value for player movement in X direction is set to 0
+# Initial value for player movement in X and Y direction is set to 0
 movePlayerX = 0
+movePlayerY = 0
 
-# Speed of player in X direction is 1 i.e., 10px
+# Speed of player in X and Y direction is 1 i.e., 10px
 playerSpeedX = 1
+playerSpeedY = 1
+
+# Player can jump upto this height from top of screen
+playerJump = 80
 
 ''' 4. CAR '''
 # X and Y coordinates or starting coordinates for car
@@ -76,14 +81,17 @@ while True:  # main game loop
             sys.exit()
 
         if KEYDOWN == event.type:
+            if K_UP == event.key:
+                # On keydown event of up key, movePlayerY value is changed to 1
+                movePlayerY = playerSpeedY
             if K_LEFT == event.key:
-                # On keydown event of left key, movePlayer value is changed to -1
+                # On keydown event of left key, movePlayerX value is changed to -1
                 movePlayerX = -playerSpeedX
             elif K_RIGHT == event.key:
-                # On keydown event of right key, movePlayer value is changed to +1
+                # On keydown event of right key, movePlayerX value is changed to +1
                 movePlayerX = playerSpeedX
 
-        if KEYUP == event.type:
+        elif KEYUP == event.type:
             if K_LEFT == event.key:
                 # On keyup event of left key, movePlayer value is changed to 0
                 movePlayerX = 0
@@ -91,8 +99,21 @@ while True:  # main game loop
                 # On keyup event of right key, movePlayer value is changed to 0
                 movePlayerX = 0
 
-    # For each of the changed value of movePlayer playerPositionX is updated
+    # For each of the changed value of movePlayerX, playerPositionX is updated
     playerPositionX += movePlayerX
+
+    # For each of the changed value of movePlayerY, playerPositionY is updated
+    # i.e., player Y coordinate started decreasing by 1 in each iteration [i.e., Jump]
+    playerPositionY -= movePlayerY
+
+    # As the player Y coordinate reached 'playerJump(79)' player Y coordinate started increasing by 1 [i.e., Drop]
+    if playerPositionY < playerJump:
+        movePlayerY = -playerSpeedY
+
+    # As the player Y coordinate reached its initial position
+    # i.e., 'playerPositionY(260)' increment of playerPositionY is stopped
+    elif playerPositionY >= 260:
+        movePlayerY = 0
 
     # carPositionX is updated with value -1 i.e., -10px in each iteration
     carPositionX -= carSpeedX
