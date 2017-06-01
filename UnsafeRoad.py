@@ -4,17 +4,24 @@ from pygame.locals import *
 # To make pygame function works
 pygame.init()
 
-''' 1. SCREEN '''
+white = (255, 255, 255)
+black = (0, 0, 0)
+green = (0, 128, 0)
+smallfont = pygame.font.SysFont('comicsansms', 25)
+medfont = pygame.font.SysFont('comicsansms', 50)
+largefont = pygame.font.SysFont('comicsansms', 80)
+
+""" 1. SCREEN """
 # As per road image dimension
 screenSizeX = 800
 screenSizeY = 419
 
-''' 2. ROAD / BACKGROUND '''
+""" 2. ROAD / BACKGROUND """
 # X and Y coordinates or starting coordinates for background image
 roadPositionX = 0
 roadPositionY = 0
 
-''' 3. PLAYER '''
+""" 3. PLAYER """
 # X and Y coordinates or starting coordinates for player
 playerPositionX = 200
 playerPositionY = 260
@@ -30,7 +37,7 @@ playerSpeedY = 1
 # Player can jump upto this height from top of screen
 playerJump = 80
 
-''' 4. CAR '''
+""" 4. CAR """
 # X and Y coordinates or starting coordinates for car
 carPositionX = 800
 carPositionY = 280
@@ -57,6 +64,67 @@ carImgPath = os.path.join('Images', 'car.png')
 roadImg = pygame.image.load(roadImgPath)
 playerImg = pygame.image.load(playerImgPath)
 carImg = pygame.image.load(carImgPath)
+
+
+# Pause functionality: 'https://youtu.be/sDL7P2Jhlh8'
+def pause():
+    """ Pause the game """
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_c:
+                    # Continue
+                    paused = False
+
+                elif event.key == K_q:
+                    # Quit
+                    # Deactivate pygame library
+                    pygame.quit()
+                    # Terminates program
+                    sys.exit()
+
+        # Fill screen with white background
+        displaySurface.fill(white)
+
+        # Display Paused in green color
+        message_to_screen("Paused", green, -50, size="large")
+        # Display how to continue or quit the game
+        message_to_screen("Press C to continue or Q to quit", black, 25)
+
+        # Update the screen
+        pygame.display.update()
+
+
+def message_to_screen(msg, color, y_displace=0, size="small"):
+    """ Displays the message on screen """
+    textSurfaceObj, textRectObj = text_objects(msg, color, size)
+    textRectObj.center = (screenSizeX / 2), (screenSizeY / 2) + y_displace
+
+    # textSurface is the object to be copied on displaySurface
+    # textRectObj is the tuple of X and Y coordinate from topleft corner
+    displaySurface.blit(textSurfaceObj, textRectObj)
+
+
+def text_objects(text, color, size):
+    """ Returns a surface and rect object
+
+    Font size and color of text
+    """
+    if size == "small":
+        textSurfaceObj = smallfont.render(text, True, color)
+    elif size == "medium":
+        textSurfaceObj = medfont.render(text, True, color)
+    elif size == "large":
+        textSurfaceObj = largefont.render(text, True, color)
+
+    # 2nd object returned is a Rect object created from surface object
+    # which will have height and width correctly set for text that was rendered
+    return textSurfaceObj, textSurfaceObj.get_rect()
+
 
 while True:  # main game loop
 
@@ -90,6 +158,8 @@ while True:  # main game loop
             elif K_RIGHT == event.key:
                 # On keydown event of right key, movePlayerX value is changed to +1
                 movePlayerX = playerSpeedX
+            elif K_p == event.key:
+                pause()
 
         elif KEYUP == event.type:
             if K_LEFT == event.key:
@@ -99,6 +169,7 @@ while True:  # main game loop
                 # On keyup event of right key, movePlayer value is changed to 0
                 movePlayerX = 0
 
+    """ Player X and Y coordinate update """
     # For each of the changed value of movePlayerX, playerPositionX is updated
     playerPositionX += movePlayerX
 
@@ -106,6 +177,7 @@ while True:  # main game loop
     # i.e., player Y coordinate started decreasing by 1 in each iteration [i.e., Jump]
     playerPositionY -= movePlayerY
 
+    """ Player Jump functionality """
     # As the player Y coordinate reached 'playerJump(79)' player Y coordinate started increasing by 1 [i.e., Drop]
     if playerPositionY < playerJump:
         movePlayerY = -playerSpeedY
@@ -115,11 +187,13 @@ while True:  # main game loop
     elif playerPositionY >= 260:
         movePlayerY = 0
 
+    """ Car X coordinate update & set car position to initial state """
     # carPositionX is updated with value -1 i.e., -10px in each iteration
     carPositionX -= carSpeedX
 
     # If carPositionX is decreased to less than carPositionMinX i.e., width of car
     if carPositionX < carPositionMinX:
+
         # Update carPositionX back to initial position
         carPositionX = setInitialCarPositionX
 
