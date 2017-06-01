@@ -7,6 +7,7 @@ pygame.init()
 white = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 128, 0)
+
 smallfont = pygame.font.SysFont('comicsansms', 30)
 medfont = pygame.font.SysFont('comicsansms', 50)
 largefont = pygame.font.SysFont('comicsansms', 80)
@@ -98,8 +99,10 @@ def gameover(playerPositionX, playerPositionY):
     gameover = True
 
     while gameover:
+        # Show crash image when accident occurs
         displaySurface.blit(crashImg, (playerPositionX - 30, playerPositionY + 50))
 
+        # Display Game Over and Restart message
         message_to_screen("Game Over", green, -25, size="medium")
         message_to_screen("Press R to restart the game", black, 25)
 
