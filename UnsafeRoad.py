@@ -7,6 +7,7 @@ pygame.init()
 white = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 128, 0)
+red = (255, 0, 0)
 
 smallfont = pygame.font.SysFont('comicsansms', 30)
 medfont = pygame.font.SysFont('comicsansms', 50)
@@ -41,7 +42,8 @@ def pause():
     while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+
+                quit_game()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == K_c:
@@ -49,11 +51,8 @@ def pause():
                     paused = False
 
                 elif event.key == K_q:
-                    # Quit
-                    # Deactivate pygame library
-                    pygame.quit()
-                    # Terminates program
-                    sys.exit()
+
+                    quit_game()
 
         # Fill screen with white background
         displaySurface.fill(white)
@@ -67,10 +66,12 @@ def pause():
         pygame.display.update()
 
 
-def message_to_screen(msg, color, y_displace=0, size="small"):
+def message_to_screen(msg, color, y_displace=0, size="small", position="center"):
     """ Displays the message on screen """
     textSurfaceObj, textRectObj = text_objects(msg, color, size)
-    textRectObj.center = (screenSizeX / 2), (screenSizeY / 2) + y_displace
+
+    if "center"==position:
+        textRectObj.center = (screenSizeX / 2), (screenSizeY / 2) + y_displace
 
     # textSurface is the object to be copied on displaySurface
     # textRectObj is the tuple of X and Y coordinate from topleft corner
@@ -104,20 +105,33 @@ def gameover(playerPositionX, playerPositionY):
 
         # Display Game Over and Restart message
         message_to_screen("Game Over", green, -25, size="medium")
-        message_to_screen("Press R to restart the game", black, 25)
+        message_to_screen("Press R to restart the game or Q to quit", black, 25)
 
         # Update the screen
         pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+
+                quit_game()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == K_r:
                     # Restart
                     start_game()
+
+                elif event.key == K_q:
+
+                    quit_game()
+
+
+def quit_game():
+    """ Quit the game """
+    # Deactivate pygame library
+    pygame.quit()
+
+    # Terminates program
+    sys.exit()
 
 
 def start_game():
@@ -158,6 +172,9 @@ def start_game():
     # Car speed is set to 0.5 i.e., 5px
     carSpeedX = 0.5
 
+    """ Score """
+    score = 0
+
     while True:  # main game loop
 
         # Copy road image on displaySurface
@@ -169,15 +186,14 @@ def start_game():
         # Copy road image on displaySurface
         displaySurface.blit(carImg, (carPositionX, carPositionY))
 
+        message_to_screen("Score: "+str(score), red, 25, "small", position="topleft")
+
         # Loop for each event that occurred e.g., keypress or mouse movement
         for event in pygame.event.get():
 
             if event.type == QUIT:
-                # Deactivate pygame library
-                pygame.quit()
 
-                # Terminates program
-                sys.exit()
+                quit_game()
 
             if KEYDOWN == event.type:
                 if K_UP == event.key:
@@ -224,6 +240,8 @@ def start_game():
 
         # If carPositionX is decreased to less than carPositionMinX i.e., width of car
         if carPositionX < carPositionMinX:
+            # Once car passed through the screen increment score and generate new car again
+            score += 1
             # Update carPositionX back to initial position
             carPositionX = setInitialCarPositionX
 
