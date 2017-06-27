@@ -39,6 +39,7 @@ def pause():
     """ Pause the game """
     # Pause functionality: 'https://youtu.be/sDL7P2Jhlh8'
     paused = True
+
     while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -151,7 +152,7 @@ def start_game():
     movePlayerX = 0
     movePlayerY = 0
 
-    # Speed of player in X and Y direction is 1 i.e., 10px
+    # Speed of player in X and Y direction is 1 i.e., 1px
     playerSpeedX = 1
     playerSpeedY = 1
 
@@ -169,7 +170,7 @@ def start_game():
     # carPositionMinX is set to -ve of car width
     carPositionMinX = -260
 
-    # Car speed is set to 0.5 i.e., 5px
+    # Car speed is set to 0.5 i.e., 0.5px
     carSpeedX = 0.5
 
     """ Score """
@@ -235,7 +236,7 @@ def start_game():
             movePlayerY = 0
 
         """ Car X coordinate update & set car position to initial state """
-        # carPositionX is updated with value -1 i.e., -10px in each iteration
+        # carPositionX is updated with value -1 i.e., -1px in each iteration
         carPositionX -= carSpeedX
 
         # If carPositionX is decreased to less than carPositionMinX i.e., width of car
